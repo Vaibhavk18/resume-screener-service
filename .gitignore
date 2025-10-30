@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+venv/
+.env
+.env.local
+
+
+# Docker
+*.log
+*.pid
+*.seed
+*.pid.lock
+*Dockerfile.old
+docker-compose.override.yml
+
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Model caches
+cache/
+data/
+__pycache__/
+*.bin
+*.pt
+*.npy
+*.pkl
