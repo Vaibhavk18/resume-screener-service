@@ -1,57 +1,53 @@
-# Resume Screener API
+# 🚀 Resume Screener API
 
-FastAPI-based backend to upload resumes (PDF/DOCX/TXT), extract key fields, and store data in PostgreSQL. Includes JWT auth.
+An intelligent **FastAPI-based backend** that automates resume screening by parsing uploaded resumes (PDF/DOCX/TXT), extracting structured data (name, email, skills, experience), and scoring candidates against job descriptions.  
+Built with **PostgreSQL**, **AWS S3**, **RDS**, and **ECS Fargate** for scalable cloud deployment.
 
-## Local Setup
+---
 
-1. Create and activate a virtualenv (optional), then install dependencies:
+## 🧩 Tech Stack
 
-```bash
-pip install -r requirements.txt
+- **Backend:** FastAPI (Python 3.11)  
+- **Database:** PostgreSQL (AWS RDS)  
+- **Storage:** AWS S3 (for resume uploads)  
+- **Containerization:** Docker + Docker Compose  
+- **Cloud Deployment:** AWS ECS (Fargate) + ECR  
+- **NLP Processing:** spaCy + SentenceTransformers (BERT)  
+- **Authentication:** JWT (JSON Web Tokens)  
+
+---
+
+## ⚙️ Features
+
+✅ Upload resumes (PDF, DOCX, TXT)  
+✅ Extract candidate name, email, skills, and total experience  
+✅ Skill matching and resume scoring via BERT embeddings  
+✅ Store resume metadata + S3 URLs in PostgreSQL (RDS)  
+✅ JWT-secured endpoints for HR users  
+✅ Fully containerized and deployed on AWS ECS  
+✅ Automatic resume text extraction using `pdfplumber` and `docx2txt`
+
+#### 2. Configure AWS Services
+- **RDS** → PostgreSQL instance for persistent data  
+- **S3** → Bucket for storing uploaded resumes  
+- **ECS (Fargate)** → Container orchestration  
+- **IAM Roles** → Grant ECS access to RDS + S3  
+
+#### 3. Environment Variables (ECS Task Definition)
+```env
+DATABASE_URL=postgresql+psycopg://user:password@your-rds-endpoint:5432/postgres
+S3_BUCKET=resume-screener-bucket
+AWS_REGION=eu-north-1
+AWS_ACCESS_KEY_ID=<your_aws_key>
+AWS_SECRET_ACCESS_KEY=<your_aws_secret>
 ```
+## 🧠 NLP Pipeline
 
-- Optional (for spaCy NER): Installing spaCy on Windows with Python 3.13 may require build tools. For best compatibility, use Python 3.12 and then:
-```bash
-pip install spacy==3.7.5
-python -m spacy download en_core_web_sm
-```
+1. **Text Extraction:** `pdfplumber` or `docx2txt`
+2. **Field Extraction:** Regex + spaCy NER
+3. **Skill Detection:** Keyword matching with an extended tech vocabulary
+4. **Semantic Scoring:** SentenceTransformer model (`all-MiniLM-L6-v2`)
+5. **Resume Ranking:** Cosine similarity → 0–100 scoring
 
-2. Start PostgreSQL locally and create a database `resume_screener`. Default connection string (psycopg v3):
-
-```
-postgresql+psycopg://postgres:postgres@localhost:5432/resume_screener
-```
-
-Override via environment variable `DATABASE_URL`.
-
-3. Run the API:
-
-```bash
-uvicorn app.main:app --reload
-```
-
-4. Seed an HR user and obtain a JWT token:
-
-- Seed: `POST /auth/seed_hr`
-- Login: `POST /auth/login` with form fields `username=hr@example.com`, `password=password`.
-
-5. Upload a resume:
-
-`POST /upload_resume` with Bearer token. Use form-data `file` as the upload.
-
-## Notes
-
-- If spaCy is not installed, the app falls back to heuristic extraction (regex/keyword) for name and skills.
-- PDF parsing uses `pdfplumber`.
-
-## Project Layout
-
-- `app/main.py` – app factory and router registration
-- `app/routes/` – API routes (auth, resumes)
-- `app/models/` – database setup and ORM entities
-- `app/utils/` – parsing and NLP helpers
-
-## Next Steps
-
-- Add endpoints for job description storage and results scoring
-- Add docker and docker-compose for local Postgres + API 
+## 📄 License
+MIT License © 2025 Vaibhav Vishal
