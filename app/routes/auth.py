@@ -27,7 +27,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    return pwd_context.hash(password[:72]) # bcrypt has a max length of 72 bytes
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
@@ -61,6 +61,27 @@ async def hr_required(current_user: User = Depends(get_current_user)) -> User:
         raise HTTPException(status_code=403, detail="HR role required")
     return current_user
 
+@router.post("/signup", status_code=status.HTTP_201_CREATED)
+def signup(email: str, password: str, db: Session = Depends(get_db)):
+    # Check if email already exists
+    existing_user = db.query(User).filter(User.email == email).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User with this email already exists."
+        )
+
+    # Create new user
+    user = User(
+        email=email,
+        password_hash=get_password_hash(password),
+        role="hr"
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return {"message": "HR account created successfully."}
 
 @router.post("/login", response_model=TokenResponse)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):

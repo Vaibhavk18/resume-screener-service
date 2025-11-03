@@ -2,8 +2,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = os.getenv("DATABASE_URL","postgresql://postgres:postgresrsn18@database-1-rsn.clw0sgiso9q6.eu-north-1.rds.amazonaws.com:5432/postgres")
-
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgresrsn18@database-1-rsn.cmbiy4yq2033.us-east-1.rds.amazonaws.com:5432/postgres")
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

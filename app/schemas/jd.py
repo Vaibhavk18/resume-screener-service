@@ -11,3 +11,4 @@ class JobDescriptionResponse(BaseModel):
     job_description_id: int
     title: Optional[str]
     skills: List[str] = Field(default_factory=list) 
+    file_url: Optional[str]

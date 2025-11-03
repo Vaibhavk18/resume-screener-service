@@ -11,6 +11,4 @@ python-docx==1.1.2
 sentence-transformers==3.0.1 
 boto3
 psycopg2-binary
-
-
-
+bcrypt==3.2.2
